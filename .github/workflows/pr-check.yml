@@ -1,0 +1,40 @@
+name: PR Check
+
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  simple-check:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Simple validation check
+      run: |
+        echo "Running simple PR validation checks..."
+        
+        # Check that README.md exists
+        if [ ! -f "README.md" ]; then
+          echo "ERROR: README.md is missing"
+          exit 1
+        fi
+        
+        # Check that README.md is not empty
+        if [ ! -s "README.md" ]; then
+          echo "ERROR: README.md is empty"
+          exit 1
+        fi
+        
+        # Check for any markdown files
+        markdown_count=$(find . -name "*.md" -type f | wc -l)
+        echo "Found $markdown_count markdown files"
+        
+        if [ $markdown_count -eq 0 ]; then
+          echo "ERROR: No markdown files found"
+          exit 1
+        fi
+        
+        echo "✅ All simple checks passed!"
